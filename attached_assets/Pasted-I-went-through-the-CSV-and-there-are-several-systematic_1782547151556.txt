@@ -1,0 +1,432 @@
+I went through the CSV, and there are several systematic problems. The good news is they're not random math mistakes. They're the kind of bugs that come from the generator logic, which means fixing the code will fix hundreds of cards at once. Computers are wonderfully consistent that way. They make the same mistake 500 times without complaint.
+
+## Overall verdict
+
+I'd currently rate it:
+
+* **CSV format:** 10/10 ✅
+* **Pretty-printing:** 8/10
+* **Mathematical correctness:** 4/10
+* **Study usefulness:** 3/10
+
+The main issue is that the generator is producing extremely degenerate polynomials.
+
+---
+
+# 1. Too many duplicates ❌
+
+For example:
+
+```
+f(x)=x⁴
+```
+
+appears multiple times.
+
+Likewise
+
+```
+f(x)=-2x²
+```
+
+```
+f(x)=3x⁴
+```
+
+etc.
+
+Every generated polynomial should be unique.
+
+I'd recommend storing them in a `Set` before exporting.
+
+---
+
+# 2. The zero polynomial should NEVER be generated ❌
+
+You have several cards like
+
+```
+f(x)=0
+```
+
+This creates nonsense study material.
+
+Its root set is
+
+```
+All real numbers
+```
+
+Your program approximates this as
+
+```
+-20
+...
+20
+```
+
+which is mathematically incorrect.
+
+The root set is **ℝ**, not "every integer between -20 and 20."
+
+I would simply reject
+
+```haskell
+Polynomial [0]
+```
+
+during generation.
+
+---
+
+# 3. Integrals are wrong ❌
+
+Example:
+
+```
+f(x)=x⁴
+
+Integral
+
+0/5x⁵ + C
+```
+
+should be
+
+[
+\frac{1}{5}x^5+C
+]
+
+Likewise
+
+```
+3x⁴
+
+↓
+
+0/5x⁵
+```
+
+should be
+
+[
+\frac35x^5
+]
+
+Your rational-number simplifier is clearly broken.
+
+It's probably doing integer division.
+
+Example:
+
+```haskell
+1 `div` 5
+```
+
+=
+
+```
+0
+```
+
+instead of
+
+```
+1/5
+```
+
+This is probably the single biggest bug.
+
+---
+
+# 4. More integral errors
+
+```
+6x⁴
+
+↓
+
+1/5x⁵
+```
+
+should be
+
+[
+\frac65x^5
+]
+
+not
+
+[
+\frac15x^5
+]
+
+Likewise
+
+```
+5x²
+
+↓
+
+1/3x³
+```
+
+should be
+
+[
+\frac53x^3
+]
+
+The numerator is disappearing.
+
+---
+
+# 5. Duplicate "Roots" section ❌
+
+Every card says
+
+```
+Roots
+
+0
+
+Roots
+
+0
+```
+
+twice.
+
+Clearly the answer builder is appending the roots section twice.
+
+Easy fix.
+
+---
+
+# 6. Positive/negative intervals
+
+These are mostly correct.
+
+Example
+
+```
+x⁴
+```
+
+Positive
+
+```
+(-∞,0)
+
+(0,∞)
+```
+
+Negative
+
+(empty)
+
+Perfect.
+
+Likewise
+
+```
+-x²
+```
+
+Negative
+
+```
+(-∞,0)
+
+(0,∞)
+```
+
+Correct.
+
+---
+
+# 7. Missing repeated-root explanation
+
+For
+
+```
+x⁴
+```
+
+there is only one root.
+
+I'd print
+
+```
+Roots
+
+0 (multiplicity 4)
+```
+
+instead of
+
+```
+0
+```
+
+Likewise
+
+```
+x²
+```
+
+```
+0 (multiplicity 2)
+```
+
+This helps when studying sign changes.
+
+---
+
+# 8. Deck is too trivial
+
+Almost every function is
+
+```
+±x²
+
+±x⁴
+
+0
+```
+
+This is not because quartics are boring.
+
+It's because your random generator seems to be producing coefficient vectors where almost everything is zero.
+
+I'd rather see
+
+```
+x⁴-7x²+12
+
+2x³-5x+8
+
+x³+x²-9x+6
+```
+
+Those are much more educational.
+
+---
+
+# 9. No cubics
+
+I didn't encounter any.
+
+That's unfortunate because cubics are where calculus starts becoming interesting.
+
+---
+
+# 10. No quartics with lower-order terms
+
+Most quartics are simply
+
+```
+ax⁴
+```
+
+instead of
+
+```
+ax⁴+bx³+cx²+dx+e
+```
+
+Again, probably a generator issue.
+
+---
+
+# 11. Missing end behavior
+
+I'd love every card to end with
+
+```
+End behavior
+
+x→∞
+
+∞
+
+x→−∞
+
+∞
+```
+
+or
+
+```
+−∞
+```
+
+depending on parity.
+
+Easy points.
+
+---
+
+# 12. Missing degree
+
+Optional, but nice.
+
+```
+Degree
+
+4
+```
+
+---
+
+# Biggest design issue
+
+The generator is creating **random coefficient lists**.
+
+I think that's backwards.
+
+Generate **roots**.
+
+Example
+
+```
+[-2,1,5]
+```
+
+↓
+
+Construct
+
+[
+(x+2)(x-1)(x-5)
+]
+
+↓
+
+Expand.
+
+Now you automatically get
+
+* interesting coefficients
+* integer roots
+* good derivatives
+* meaningful sign charts
+
+No degenerate polynomials.
+
+---
+
+## Priority list
+
+If this were my project, I'd fix things in this order:
+
+1. **Fix the integral bug** (currently the most serious mathematical error).
+2. **Never generate the zero polynomial.**
+3. **Remove duplicate "Roots" sections.**
+4. **Generate functions from random roots instead of random coefficients.** This will dramatically improve the quality of the deck.
+5. **Deduplicate generated polynomials.**
+6. **Add end behavior.**
+7. **Add root multiplicities.**
+8. **Expand to cubics and quartics with genuinely interesting structure.**
+
+Once those are done, I think the quality of the deck jumps from "proof of concept" to something I'd actually use for daily Anki reviews. The mathematical engine is the heart of the project, and getting the generation strategy right will make every downstream feature better.

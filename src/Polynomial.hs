@@ -22,12 +22,15 @@ scalePoly s (Polynomial coeffs) = Polynomial (map (* s) coeffs)
 
 multiplyPoly :: Polynomial -> Polynomial -> Polynomial
 multiplyPoly (Polynomial a) (Polynomial b) =
-  let n = length a + length b - 1
-      result = foldl addPoly (Polynomial (replicate n 0))
-                 [ scalePoly ca (Polynomial (replicate i 0 ++ [1] ++ replicate (length b - 1) 0))
-                 | (ca, i) <- zip a [length b - 1, length b - 2 .. 0]
-                 ]
-  in result
+  let na = length a
+      nb = length b
+      n  = na + nb - 1
+      coeffs = [ sum [ a !! i * b !! j
+                     | i <- [0 .. na - 1]
+                     , j <- [0 .. nb - 1]
+                     , i + j == k ]
+               | k <- [0 .. n - 1] ]
+  in Polynomial coeffs
 
 fromRoots :: [Rational] -> Polynomial
 fromRoots [] = Polynomial [1]
@@ -38,3 +41,6 @@ trimPoly :: Polynomial -> Polynomial
 trimPoly (Polynomial coeffs) =
   let trimmed = dropWhile (== 0) coeffs
   in if null trimmed then Polynomial [0] else Polynomial trimmed
+
+isZeroPoly :: Polynomial -> Bool
+isZeroPoly p = trimPoly p == Polynomial [0]

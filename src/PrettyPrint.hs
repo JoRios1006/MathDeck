@@ -1,17 +1,13 @@
 module PrettyPrint where
 
-import Types
-import Polynomial
+import Types hiding (numerator, denominator)
 import Data.List (intercalate)
+import qualified Data.Ratio as R
 
 showRational :: Rational -> String
 showRational r
-  | denominator r == 1 = show (numerator r)
-  | otherwise = show (numerator r) ++ "/" ++ show (denominator r)
-  where
-    numerator x = floor x
-    denominator x =
-      head $ filter (\d -> x * fromIntegral d == fromIntegral (round (x * fromIntegral d) :: Integer)) [1..1000 :: Integer]
+  | R.denominator r == 1 = show (R.numerator r)
+  | otherwise            = show (R.numerator r) ++ "/" ++ show (R.denominator r)
 
 superscript :: Int -> String
 superscript 0 = ""
@@ -36,10 +32,10 @@ showTerm coeff e
 showPolynomial :: Polynomial -> String
 showPolynomial (Polynomial []) = "0"
 showPolynomial (Polynomial coeffs) =
-  let n = length coeffs - 1
-      pairs = filter (\(c,_) -> c /= 0) $ zip coeffs [n, n-1 .. 0]
+  let n     = length coeffs - 1
+      pairs = filter (\(c, _) -> c /= 0) $ zip coeffs [n, n-1 .. 0]
   in case pairs of
-    [] -> "0"
+    []           -> "0"
     (first:rest) ->
       showTerm (fst first) (snd first) ++
       concatMap (\(c, e) ->
@@ -51,18 +47,17 @@ showPolynomial (Polynomial coeffs) =
 showIntegral :: Polynomial -> String
 showIntegral p = showPolynomial p ++ " + C"
 
+showR :: Rational -> String
+showR r = showRational r
+
 showSignChart :: Types.SignChart -> String
 showSignChart (Types.SignChart rs ivs) =
-  "Roots\n\n" ++ intercalate "\n" (map showR rs) ++
-  "\n\nPositive\n\n" ++ intercalate "\n" [l | (Positive, l) <- ivs] ++
-  "\n\nNegative\n\n" ++ intercalate "\n" [l | (Negative, l) <- ivs]
+  let posIntervals = [l | (Positive, l) <- ivs]
+      negIntervals = [l | (Negative, l) <- ivs]
+      posStr = if null posIntervals then "(none)" else intercalate "\n" posIntervals
+      negStr = if null negIntervals then "(none)" else intercalate "\n" negIntervals
+  in "Positive\n\n" ++ posStr ++ "\n\nNegative\n\n" ++ negStr
 
-showEndBehavior :: Types.EndBehavior -> String
-showEndBehavior (Types.EndBehavior pos neg) =
-  "x→∞\n\n" ++ pos ++ "\n\nx→−∞\n\n" ++ neg
-
-showR :: Rational -> String
-showR r =
-  let n = floor r :: Integer
-      d = 1 :: Integer
-  in if fromIntegral n == r then show n else show (fromRational r :: Double)
+showEndBehavior :: String -> String -> String
+showEndBehavior posInf negInf =
+  "x→∞: " ++ posInf ++ "\nx→−∞: " ++ negInf

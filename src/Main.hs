@@ -2,8 +2,9 @@ module Main where
 
 import Data.Time.Clock (getCurrentTime, utctDayTime)
 import System.Environment (getArgs)
+import Data.Maybe (mapMaybe)
 import Generator
-import CSV (AnkiCard, polynomialCard, writeCSVFile)
+import CSV (AnkiCard, polynomialCard, writeCSVFile, deduplicateCards)
 import Types
 
 defaultCount :: Int
@@ -33,15 +34,16 @@ parseDifficulty "hard"   = Hard
 parseDifficulty _        = Mixed
 
 generateCards :: RNG -> Difficulty -> Int -> [AnkiCard]
-generateCards rng difficulty count = go rng count []
+generateCards rng difficulty count = deduplicateCards (go rng count [])
   where
     go _ 0 acc = acc
     go g n acc =
       let (result, g') = generateByDifficulty difficulty g
       in case result of
         Left poly ->
-          let card = polynomialCard poly (difficultyTags difficulty)
-          in go g' (n-1) (card:acc)
+          case polynomialCard poly (difficultyTags difficulty) of
+            Just card -> go g' (n-1) (card:acc)
+            Nothing   -> go g' n acc
         Right _ ->
           go g' (n-1) acc
 
