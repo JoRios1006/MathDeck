@@ -1,0 +1,90 @@
+cabal build             
+Resolving dependencies...
+Build profile: -w ghc-9.10.1 -O1
+In order, the following will be built (use -v for more details):
+ - splitmix-0.1.3.2 (lib) (requires download & build)
+ - random-1.2.1.3 (lib) (requires download & build)
+ - mathdeck-0.1.0.0 (exe:mathdeck) (first run)
+Downloading  splitmix-0.1.3.2
+Downloaded   splitmix-0.1.3.2
+Downloading  random-1.2.1.3
+Starting     splitmix-0.1.3.2 (lib)
+Building     splitmix-0.1.3.2 (lib)
+Installing   splitmix-0.1.3.2 (lib)
+Completed    splitmix-0.1.3.2 (lib)
+Downloaded   random-1.2.1.3
+Starting     random-1.2.1.3 (lib)
+Building     random-1.2.1.3 (lib)
+Installing   random-1.2.1.3 (lib)
+Completed    random-1.2.1.3 (lib)
+Configuring executable 'mathdeck' for mathdeck-0.1.0.0...
+Preprocessing executable 'mathdeck' for mathdeck-0.1.0.0...
+Building executable 'mathdeck' for mathdeck-0.1.0.0...
+[1 of 9] Compiling Types            ( src/Types.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/Types.o )
+[2 of 9] Compiling Polynomial       ( src/Polynomial.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/Polynomial.o )
+[3 of 9] Compiling SignChart        ( src/SignChart.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/SignChart.o )
+src/SignChart.hs:31:70: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘tail’
+    (imported from Prelude, but defined in GHC.Internal.List):
+    "This is a partial function, it throws an error on empty lists. Replace it with 'drop' 1, or use pattern matching or 'GHC.Internal.Data.List.uncons' instead. Consider refactoring to use "Data.List.NonEmpty"."
+   |
+31 |       testPoints = (-1000) : map (\(a,b) -> (a+b)/2) (zip allPoints (tail allPoints)) ++ [1000]
+   |                                                                      ^^^^
+
+src/SignChart.hs:57:10: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Prelude, but defined in GHC.Internal.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching, 'Data.List.uncons' or 'Data.Maybe.listToMaybe' instead. Consider refactoring to use "Data.List.NonEmpty"."
+   |
+57 |       in head $ filter (\d -> rat * fromIntegral d == fromIntegral (round (rat * fromIntegral d) :: Integer)) candidates
+   |          ^^^^
+
+[4 of 9] Compiling PrettyPrint      ( src/PrettyPrint.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/PrettyPrint.o )
+src/PrettyPrint.hs:14:7: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Prelude, but defined in GHC.Internal.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching, 'Data.List.uncons' or 'Data.Maybe.listToMaybe' instead. Consider refactoring to use "Data.List.NonEmpty"."
+   |
+14 |       head $ filter (\d -> x * fromIntegral d == fromIntegral (round (x * fromIntegral d) :: Integer)) [1..1000 :: Integer]
+   |       ^^^^
+
+[5 of 9] Compiling Limits           ( src/Limits.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/Limits.o )
+src/Limits.hs:42:5: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Prelude, but defined in GHC.Internal.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching, 'Data.List.uncons' or 'Data.Maybe.listToMaybe' instead. Consider refactoring to use "Data.List.NonEmpty"."
+   |
+42 |   | head coeffs > 0 = "∞"
+   |     ^^^^
+
+src/Limits.hs:49:10: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Prelude, but defined in GHC.Internal.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching, 'Data.List.uncons' or 'Data.Maybe.listToMaybe' instead. Consider refactoring to use "Data.List.NonEmpty"."
+   |
+49 |       if head coeffs > 0 then "∞" else "-∞"
+   |          ^^^^
+
+src/Limits.hs:51:10: warning: [GHC-63394] [-Wx-partial]
+    In the use of ‘head’
+    (imported from Prelude, but defined in GHC.Internal.List):
+    "This is a partial function, it throws an error on empty lists. Use pattern matching, 'Data.List.uncons' or 'Data.Maybe.listToMaybe' instead. Consider refactoring to use "Data.List.NonEmpty"."
+   |
+51 |       if head coeffs > 0 then "-∞" else "∞"
+   |          ^^^^
+
+[6 of 9] Compiling Generator        ( src/Generator.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/Generator.o )
+[7 of 9] Compiling Calculus         ( src/Calculus.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/Calculus.o )
+[8 of 9] Compiling CSV              ( src/CSV.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/CSV.o )
+[9 of 9] Compiling Main             ( src/Main.hs, dist-newstyle/build/x86_64-linux/ghc-9.10.1/mathdeck-0.1.0.0/x/mathdeck/build/mathdeck/mathdeck-tmp/Main.o )
+src/Main.hs:3:1: error: [GHC-87110]
+    Could not load module ‘Data.Time.Clock’.
+    It is a member of the hidden package ‘time-1.12.2’.
+    Perhaps you need to add ‘time’ to the build-depends in your .cabal file.
+    Use -v to see a list of the files searched for.
+  |
+3 | import Data.Time.Clock (getCurrentTime, utctDayTime)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Error: [Cabal-7125]
+Failed to build exe:mathdeck from mathdeck-0.1.0.0.
