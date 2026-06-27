@@ -1,0 +1,30 @@
+modules = ["haskell-ghc9.10"]
+[agent]
+expertMode = true
+stack = "BEST_EFFORT_FALLBACK"
+
+[nix]
+channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "ghc -isrc src/Main.hs -o mathdeck -w && echo 'Build complete. Run: ./mathdeck [easy|medium|hard|mixed] [count]' && ./mathdeck mixed 10"
+
+[workflows.workflow.metadata]
+outputType = "console"
