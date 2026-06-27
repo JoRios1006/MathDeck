@@ -23,6 +23,6 @@ executable mathdeck
         Generator
         CSV
     build-depends:
-        base ^>=4.20.0.0,
+        base >=4.20 && <5,
         time ^>=1.12
     default-language: GHC2021

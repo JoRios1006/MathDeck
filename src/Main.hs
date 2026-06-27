@@ -2,9 +2,8 @@ module Main where
 
 import Data.Time.Clock (getCurrentTime, utctDayTime)
 import System.Environment (getArgs)
-import Data.Maybe (mapMaybe)
 import Generator
-import CSV (AnkiCard, polynomialCard, writeCSVFile, deduplicateCards)
+import CSV (AnkiCard, polynomialCards, writeCSVFile, deduplicateCards)
 import Types
 
 defaultCount :: Int
@@ -16,11 +15,13 @@ main = do
   let (difficulty, count) = parseArgs args
   now <- getCurrentTime
   let seed = round (utctDayTime now * 1000) :: Integer
-  let rng = mkRNG seed
+  let rng  = mkRNG seed
   let cards = generateCards rng difficulty count
   let filename = "mathdeck_output.csv"
   writeCSVFile filename cards
-  putStrLn $ "MathDeck: Generated " ++ show (length cards) ++ " cards -> " ++ filename
+  let nFunctions = count
+      nCards     = length cards
+  putStrLn $ "MathDeck: " ++ show nFunctions ++ " functions → " ++ show nCards ++ " cards -> " ++ filename
 
 parseArgs :: [String] -> (Difficulty, Int)
 parseArgs []      = (Mixed, defaultCount)
@@ -34,18 +35,19 @@ parseDifficulty "hard"   = Hard
 parseDifficulty _        = Mixed
 
 generateCards :: RNG -> Difficulty -> Int -> [AnkiCard]
-generateCards rng difficulty count = deduplicateCards (go rng count [])
+generateCards rng difficulty count =
+  deduplicateCards $ concatMap generate (take count (generatePolys rng difficulty))
   where
-    go _ 0 acc = acc
-    go g n acc =
+    generate poly = polynomialCards poly (difficultyTags difficulty)
+
+generatePolys :: RNG -> Difficulty -> [Polynomial]
+generatePolys rng difficulty = go rng
+  where
+    go g =
       let (result, g') = generateByDifficulty difficulty g
       in case result of
-        Left poly ->
-          case polynomialCard poly (difficultyTags difficulty) of
-            Just card -> go g' (n-1) (card:acc)
-            Nothing   -> go g' n acc
-        Right _ ->
-          go g' (n-1) acc
+        Left poly -> poly : go g'
+        Right _   -> go g'
 
 difficultyTags :: Difficulty -> [String]
 difficultyTags Easy   = ["easy", "quadratic"]

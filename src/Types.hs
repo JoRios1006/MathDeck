@@ -12,7 +12,7 @@ data SignInterval = Positive | Negative
   deriving (Show, Eq)
 
 data SignChart = SignChart
-  { roots     :: [Rational]
+  { roots     :: [(Rational, Int)]
   , intervals :: [(SignInterval, String)]
   } deriving (Show, Eq)
 
@@ -22,11 +22,11 @@ data EndBehavior = EndBehavior
   } deriving (Show, Eq)
 
 data FunctionAnalysis = FunctionAnalysis
-  { polynomial   :: Polynomial
-  , derivative   :: Polynomial
-  , integral     :: Polynomial
-  , signChart    :: SignChart
-  , endBehavior  :: EndBehavior
+  { polynomial  :: Polynomial
+  , derivative  :: Polynomial
+  , integral    :: Polynomial
+  , signChart   :: SignChart
+  , endBehavior :: EndBehavior
   } deriving (Show, Eq)
 
 data Difficulty = Easy | Medium | Hard | Mixed

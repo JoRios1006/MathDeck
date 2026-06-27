@@ -44,3 +44,19 @@ trimPoly (Polynomial coeffs) =
 
 isZeroPoly :: Polynomial -> Bool
 isZeroPoly p = trimPoly p == Polynomial [0]
+
+synthDiv :: Polynomial -> Rational -> Polynomial
+synthDiv (Polynomial []) _ = Polynomial []
+synthDiv (Polynomial coeffs) r =
+  let (quotCoeffs, _) = foldl
+        (\(qs, carry) c ->
+          let carry' = carry * r + c
+          in (qs ++ [carry'], carry'))
+        ([], 0)
+        coeffs
+  in trimPoly (Polynomial (init quotCoeffs))
+
+multiplicity :: Polynomial -> Rational -> Int
+multiplicity p r
+  | evaluate p r /= 0 = 0
+  | otherwise         = 1 + multiplicity (synthDiv p r) r

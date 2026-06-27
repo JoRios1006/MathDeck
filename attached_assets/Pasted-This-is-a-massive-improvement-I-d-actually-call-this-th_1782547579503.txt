@@ -1,0 +1,327 @@
+This is a **massive improvement**. I'd actually call this the first version that feels like a real study deck instead of a proof of concept.
+
+Here's my review.
+
+## Overall
+
+**Previous version:** ~4/10
+
+**This version:** **8.5-9/10**
+
+The generator is finally producing interesting functions, the integrals are fixed, and the cards feel like something I'd actually review.
+
+---
+
+## ✅ The good
+
+### 1. The generated polynomials are interesting
+
+For example:
+
+```text
+f(x) = x⁴ - 5x³ + 7x² - 3x
+```
+
+That's exactly the sort of polynomial I'd expect on an exam.
+
+Likewise
+
+```text
+x³ - 4x² - x + 4
+```
+
+and
+
+```text
+x⁴ - x³ - 28x² + 16x + 192
+```
+
+Much, much better than the previous deck full of `±x²`.
+
+---
+
+### 2. Integrals are now correct ✅
+
+I immediately checked things like
+
+```text
+x⁴
+```
+
+↓
+
+```text
+1/5x⁵
+```
+
+Correct.
+
+Likewise
+
+```text
+x³
+```
+
+↓
+
+```text
+1/4x⁴
+```
+
+No more mysterious `0/5` coefficients. That bug appears to be gone.
+
+---
+
+### 3. End behavior
+
+Excellent addition.
+
+```
+x→∞ : ∞
+
+x→−∞ : −∞
+```
+
+This is surprisingly useful because it reinforces parity and leading coefficient every single review.
+
+---
+
+### 4. Degree
+
+Nice touch.
+
+```
+Degree: 4
+```
+
+Very helpful.
+
+---
+
+## Things I'd still improve
+
+### 1. Sign charts are wrong for repeated roots
+
+This is the biggest remaining mathematical issue.
+
+Example:
+
+```
+x⁴ + 2x³ -39x² -40x +400
+```
+
+The roots listed are
+
+```
+-5
+4
+```
+
+Yet it's a quartic, so unless there are complex roots, those roots must have even multiplicity. In fact,
+
+[
+x^4 + 2x^3 -39x^2 -40x +400 = (x+5)^2(x-4)^2.
+]
+
+A square is **never negative**.
+
+Your card says:
+
+```
+Positive
+
+(-∞,-5)
+(-5,4)
+(4,∞)
+
+Negative
+
+(none)
+```
+
+The "Negative: none" part is correct, but the positive intervals should really be:
+
+```
+(-∞,-5)
+(-5,4)
+(4,∞)
+
+Zeros:
+{-5,4}
+```
+
+or simply note that the function is positive everywhere except at the roots. Right now the interval listing is technically okay because the roots are excluded, but it's missing the important insight that the sign does **not** change across an even-multiplicity root.
+
+I would eventually include multiplicities.
+
+---
+
+### 2. Root multiplicities
+
+Instead of
+
+```
+Roots
+
+-5
+4
+```
+
+I'd print
+
+```
+Roots
+
+-5 (×2)
+4 (×2)
+```
+
+That immediately explains the sign chart.
+
+---
+
+### 3. The cards are a little long
+
+A typical back currently has:
+
+* roots
+* positive intervals
+* negative intervals
+* derivative
+* integral
+* end behavior
+* degree
+
+That's a lot.
+
+Personally I'd split the deck into several card types eventually.
+
+---
+
+### 4. Definite integrals
+
+You're *so close*.
+
+Instead of only
+
+```
+Integral
+
+...
+```
+
+I'd love
+
+```
+Compute
+
+∫₋₂³ f(x)dx
+```
+
+on the front, with the numeric answer on the back.
+
+---
+
+### 5. Critical points
+
+Since you're already computing
+
+```
+Derivative
+
+4x³−15x²+14x−3
+```
+
+the next logical step is
+
+```
+Critical points
+
+Increasing
+
+Decreasing
+```
+
+That would make these fantastic Calculus I review cards.
+
+---
+
+## Minor cosmetic suggestions
+
+Instead of
+
+```
+Positive
+
+...
+```
+
+I'd write
+
+```
+f(x) > 0
+```
+
+Likewise
+
+```
+f(x) < 0
+```
+
+It feels more mathematical.
+
+---
+
+Instead of
+
+```
+Roots
+```
+
+I'd probably use
+
+```
+Zeros
+```
+
+Both are correct, but "zeros of the function" is common terminology once you start talking about arbitrary functions.
+
+---
+
+## One thing I absolutely love
+
+You're generating functions **from their roots**.
+
+That was the right design decision.
+
+It guarantees
+
+* nice coefficients
+* nice factors
+* meaningful derivatives
+* meaningful sign charts
+
+instead of random garbage.
+
+That's exactly how I'd have built the engine.
+
+---
+
+## Final verdict
+
+This is no longer "a Haskell script."
+
+It's the beginning of a legitimate math practice generator.
+
+I'd happily put this on GitHub as **MathDeck v0.2**.
+
+The next big milestone I'd work toward isn't more algebra. It would be **card diversity**:
+
+* "Find the derivative."
+* "Find the roots."
+* "Determine where (f(x) > 0)."
+* "Compute the indefinite integral."
+* "Evaluate (\lim_{x\to a} f(x))."
+* "Complete function analysis."
+
+Using the same generated function for multiple card types would dramatically increase the educational value without making the generator much more complicated. That's where I think MathDeck starts becoming a genuinely compelling study tool rather than just a CSV exporter.

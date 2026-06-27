@@ -50,13 +50,21 @@ showIntegral p = showPolynomial p ++ " + C"
 showR :: Rational -> String
 showR r = showRational r
 
+showRoot :: (Rational, Int) -> String
+showRoot (r, 1) = showR r
+showRoot (r, m) = showR r ++ " (×" ++ show m ++ ")"
+
+showRoots :: [(Rational, Int)] -> String
+showRoots []  = "(none)"
+showRoots rs  = intercalate "\n" (map showRoot rs)
+
 showSignChart :: Types.SignChart -> String
 showSignChart (Types.SignChart rs ivs) =
   let posIntervals = [l | (Positive, l) <- ivs]
       negIntervals = [l | (Negative, l) <- ivs]
       posStr = if null posIntervals then "(none)" else intercalate "\n" posIntervals
       negStr = if null negIntervals then "(none)" else intercalate "\n" negIntervals
-  in "Positive\n\n" ++ posStr ++ "\n\nNegative\n\n" ++ negStr
+  in "f(x) > 0\n\n" ++ posStr ++ "\n\nf(x) < 0\n\n" ++ negStr
 
 showEndBehavior :: String -> String -> String
 showEndBehavior posInf negInf =
