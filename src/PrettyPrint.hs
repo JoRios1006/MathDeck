@@ -4,68 +4,61 @@ import Types hiding (numerator, denominator)
 import Data.List (intercalate)
 import qualified Data.Ratio as R
 
-showRational :: Rational -> String
-showRational r
-  | R.denominator r == 1 = show (R.numerator r)
-  | otherwise            = show (R.numerator r) ++ "/" ++ show (R.denominator r)
+fracLatex :: Integer -> Integer -> String
+fracLatex n 1 = show n
+fracLatex n d = "\\frac{" ++ show n ++ "}{" ++ show d ++ "}"
 
-superscript :: Int -> String
-superscript 0 = ""
-superscript 1 = ""
-superscript 2 = "²"
-superscript 3 = "³"
-superscript 4 = "⁴"
-superscript 5 = "⁵"
-superscript n = "^" ++ show n
+showRationalLatex :: Rational -> String
+showRationalLatex r =
+  let n = R.numerator r
+      d = R.denominator r
+  in if n < 0
+     then "-" ++ fracLatex (abs n) d
+     else fracLatex n d
 
-showTerm :: Rational -> Int -> String
-showTerm coeff 0 = showRational coeff
-showTerm coeff 1
+showTermLatex :: Rational -> Int -> String
+showTermLatex coeff 0 = showRationalLatex coeff
+showTermLatex coeff 1
   | coeff == 1  = "x"
   | coeff == -1 = "-x"
-  | otherwise   = showRational coeff ++ "x"
-showTerm coeff e
-  | coeff == 1  = "x" ++ superscript e
-  | coeff == -1 = "-x" ++ superscript e
-  | otherwise   = showRational coeff ++ "x" ++ superscript e
+  | otherwise   = showRationalLatex coeff ++ "x"
+showTermLatex coeff e
+  | coeff == 1  = "x^{" ++ show e ++ "}"
+  | coeff == -1 = "-x^{" ++ show e ++ "}"
+  | otherwise   = showRationalLatex coeff ++ "x^{" ++ show e ++ "}"
 
-showPolynomial :: Polynomial -> String
-showPolynomial (Polynomial []) = "0"
-showPolynomial (Polynomial coeffs) =
+showPolyLatex :: Polynomial -> String
+showPolyLatex (Polynomial []) = "0"
+showPolyLatex (Polynomial coeffs) =
   let n     = length coeffs - 1
       pairs = filter (\(c, _) -> c /= 0) $ zip coeffs [n, n-1 .. 0]
   in case pairs of
-    []           -> "0"
+    [] -> "0"
     (first:rest) ->
-      showTerm (fst first) (snd first) ++
+      showTermLatex (fst first) (snd first) ++
       concatMap (\(c, e) ->
         if c > 0
-          then " + " ++ showTerm c e
-          else " - " ++ showTerm (abs c) e
+          then " + " ++ showTermLatex c e
+          else " - " ++ showTermLatex (abs c) e
       ) rest
 
-showIntegral :: Polynomial -> String
-showIntegral p = showPolynomial p ++ " + C"
+showIntegralLatex :: Polynomial -> String
+showIntegralLatex p = showPolyLatex p ++ " + C"
 
 showR :: Rational -> String
-showR r = showRational r
+showR = showRationalLatex
 
-showRoot :: (Rational, Int) -> String
-showRoot (r, 1) = showR r
-showRoot (r, m) = showR r ++ " (×" ++ show m ++ ")"
+showRootLatex :: (Rational, Int) -> String
+showRootLatex (r, 1) = showRationalLatex r
+showRootLatex (r, m) = showRationalLatex r ++ "\\;(\\times " ++ show m ++ ")"
 
-showRoots :: [(Rational, Int)] -> String
-showRoots []  = "(none)"
-showRoots rs  = intercalate "\n" (map showRoot rs)
+showRootsLatex :: [(Rational, Int)] -> String
+showRootsLatex [] = "\\varnothing"
+showRootsLatex rs = intercalate ", \\;" (map showRootLatex rs)
 
-showSignChart :: Types.SignChart -> String
-showSignChart (Types.SignChart rs ivs) =
-  let posIntervals = [l | (Positive, l) <- ivs]
-      negIntervals = [l | (Negative, l) <- ivs]
-      posStr = if null posIntervals then "(none)" else intercalate "\n" posIntervals
-      negStr = if null negIntervals then "(none)" else intercalate "\n" negIntervals
-  in "f(x) > 0\n\n" ++ posStr ++ "\n\nf(x) < 0\n\n" ++ negStr
-
-showEndBehavior :: String -> String -> String
-showEndBehavior posInf negInf =
-  "x→∞: " ++ posInf ++ "\nx→−∞: " ++ negInf
+showIntervalsLatex :: [(SignInterval, String)] -> SignInterval -> String
+showIntervalsLatex ivs sign =
+  let matching = [l | (s, l) <- ivs, s == sign]
+  in if null matching
+     then "\\varnothing"
+     else intercalate " \\cup " matching

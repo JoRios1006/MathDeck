@@ -26,7 +26,7 @@ insertSorted x (y:ys)
 buildIntervals :: Polynomial -> [Rational] -> [(SignInterval, String)]
 buildIntervals p [] =
   let sign = if evaluate p 0 > 0 then Positive else Negative
-  in [(sign, "(-∞,∞)")]
+  in [(sign, "(-\\infty,\\infty)")]
 buildIntervals p sortedRoots =
   let testPoints = (-1000) : midpoints sortedRoots ++ [1000]
       boundaries = zip (Nothing : map Just sortedRoots)
@@ -42,13 +42,12 @@ buildIntervals p sortedRoots =
 
     makeInterval lo hi testPt =
       let sign  = if evaluate p testPt > 0 then Positive else Negative
-          label = intervalLabel lo hi
-      in (sign, label)
+      in (sign, intervalLabel lo hi)
 
-    intervalLabel Nothing  (Just b) = "(-∞," ++ showR b ++ ")"
-    intervalLabel (Just a) Nothing  = "(" ++ showR a ++ ",∞)"
+    intervalLabel Nothing  (Just b) = "(-\\infty," ++ showR b ++ ")"
+    intervalLabel (Just a) Nothing  = "(" ++ showR a ++ ",\\infty)"
     intervalLabel (Just a) (Just b) = "(" ++ showR a ++ "," ++ showR b ++ ")"
-    intervalLabel Nothing  Nothing  = "(-∞,∞)"
+    intervalLabel Nothing  Nothing  = "(-\\infty,\\infty)"
 
 showR :: Rational -> String
 showR r
