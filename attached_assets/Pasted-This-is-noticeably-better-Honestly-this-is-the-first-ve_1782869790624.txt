@@ -1,0 +1,321 @@
+This is **noticeably better**. Honestly, this is the first version where I can imagine importing it into Anki and actually using it every day.
+
+The HTML is much cleaner, the cards are focused, and the MathJax makes everything look like mathematics instead of Unicode art. That's a big step up.
+
+My overall score would now be **9.3/10**.
+
+Here's what I noticed.
+
+## 🟢 Excellent improvements
+
+### The cards have hierarchy now
+
+Instead of dumping plain text, you're using:
+
+* headings
+* separators
+* spacing
+* MathJax display equations
+
+For example, the Full Analysis card is much easier to scan:
+
+* Zeros
+* (f(x)>0)
+* (f(x)<0)
+* Derivative
+* Integral
+* End behavior
+* Degree
+
+That's exactly how a textbook would organize it.
+
+---
+
+### MathJax everywhere
+
+Huge improvement.
+
+Instead of
+
+```text
+1/5x⁵
+```
+
+you now have
+
+[
+\frac15x^5
+]
+
+That's a completely different reading experience.
+
+---
+
+### Front cards are much nicer
+
+The derivative card
+
+```html
+Find \(f'(x)\)
+
+\[
+f(x)=...
+\]
+```
+
+is exactly what I'd expect from a polished deck.
+
+Simple.
+
+Centered.
+
+Readable.
+
+---
+
+### Multiplicity
+
+Excellent.
+
+Instead of
+
+```text
+2
+```
+
+you now print
+
+```text
+2 (×2)
+```
+
+That teaches an important mathematical idea instead of hiding it.
+
+---
+
+## Things I'd still improve
+
+These are almost entirely cosmetic now.
+
+---
+
+### 1. Bigger equations
+
+Currently
+
+```html
+font-size:22px;
+```
+
+I'd increase the displayed function.
+
+Maybe
+
+```css
+font-size:30px;
+```
+
+for
+
+[
+f(x)=...
+]
+
+The function should dominate the card.
+
+---
+
+### 2. Use a math font
+
+Instead of
+
+```css
+font-family:Georgia;
+```
+
+I'd honestly use
+
+```css
+font-family:
+"STIX Two Text",
+"Cambria Math",
+serif;
+```
+
+or even
+
+```css
+font-family:
+"Latin Modern Roman",
+serif;
+```
+
+Georgia is pleasant, but mathematical fonts have nicer numerals and spacing.
+
+---
+
+### 3. Slightly more breathing room
+
+Instead of
+
+```css
+padding:15px;
+```
+
+I'd use
+
+```css
+padding:24px;
+```
+
+Flashcards benefit from whitespace.
+
+---
+
+### 4. Softer separators
+
+Instead of
+
+```css
+border-top:1px solid #ddd;
+```
+
+I'd use
+
+```css
+#e8e8e8
+```
+
+Tiny detail.
+
+Looks surprisingly more elegant.
+
+---
+
+### 5. Color
+
+Right now everything is black.
+
+I'd only color headings.
+
+For example
+
+```css
+color:#3b82f6;
+```
+
+or
+
+```css
+color:#2563eb;
+```
+
+Nothing flashy.
+
+Just enough that your eye immediately finds
+
+> Derivative
+
+or
+
+> Integral
+
+---
+
+### 6. End behavior
+
+Current
+
+```text
+x→+∞
+
+∞
+
+x→−∞
+
+∞
+```
+
+I'd write
+
+[
+\lim_{x\to\infty}f(x)=\infty
+]
+
+instead.
+
+It reinforces limit notation every single review.
+
+---
+
+### 7. Roots
+
+Current
+
+```text
+-4,\;2\;(\times2),\;5
+```
+
+I'd write
+
+[
+x=-4,\qquad
+x=2;(\times2),\qquad
+x=5
+]
+
+Small improvement.
+
+More mathematical.
+
+---
+
+## One thing I would absolutely change
+
+I'd put the **prompt at the top**.
+
+Instead of
+
+```
+f(x)=...
+
+------------
+
+Find f'(x)
+```
+
+I'd invert it.
+
+```
+Differentiate
+
+------------
+
+\[
+f(x)=...
+\]
+```
+Humans naturally read top-to-bottom.
+You want the instruction first.
+## One feature I'd add next
+Since you're already generating HTML...
+I'd add a tiny footer.
+For example
+```html
+<div style="
+margin-top:18px;
+font-size:11px;
+color:#999;
+text-align:right;">
+Quartic • Medium • Derivative
+</div>
+```
+It looks professional and gives context without cluttering the card.
+---
+## My favorite improvement
+This:
+```html
+<div style='font-family:Georgia;text-align:center;padding:20px;'>
+```
+instead of dumping plain text.
+That single design decision makes the deck feel like it was intentionally designed rather than merely exported.

@@ -49,12 +49,12 @@ showR :: Rational -> String
 showR = showRationalLatex
 
 showRootLatex :: (Rational, Int) -> String
-showRootLatex (r, 1) = showRationalLatex r
-showRootLatex (r, m) = showRationalLatex r ++ "\\;(\\times " ++ show m ++ ")"
+showRootLatex (r, 1) = "x = " ++ showRationalLatex r
+showRootLatex (r, m) = "x = " ++ showRationalLatex r ++ "\\;(\\times " ++ show m ++ ")"
 
 showRootsLatex :: [(Rational, Int)] -> String
 showRootsLatex [] = "\\varnothing"
-showRootsLatex rs = intercalate ", \\;" (map showRootLatex rs)
+showRootsLatex rs = intercalate ", \\qquad " (map showRootLatex rs)
 
 showIntervalsLatex :: [(SignInterval, String)] -> SignInterval -> String
 showIntervalsLatex ivs sign =
@@ -62,3 +62,7 @@ showIntervalsLatex ivs sign =
   in if null matching
      then "\\varnothing"
      else intercalate " \\cup " matching
+
+showRatFuncLatex :: Types.RationalFunc -> String
+showRatFuncLatex (Types.RationalFunc num den) =
+  "\\frac{" ++ showPolyLatex num ++ "}{" ++ showPolyLatex den ++ "}"
